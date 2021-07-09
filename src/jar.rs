@@ -117,7 +117,7 @@ impl CookieJar {
         self.delta_cookies
             .get(name)
             .or_else(|| self.original_cookies.get(name))
-            .and_then(|c| if !c.removed { Some(&c.cookie) } else { None })
+            .and_then(|c| if c.removed { None } else { Some(&c.cookie) })
     }
 
     /// Adds an "original" `cookie` to this jar. If an original cookie with the
@@ -410,7 +410,7 @@ impl CookieJar {
     /// assert!(jar.get("private").is_some());
     /// ```
     #[cfg(feature = "private")]
-    #[cfg_attr(nightly, doc(cfg(feature = "private")))]
+    #[cfg_attr(all(nightly, doc), doc(cfg(feature = "private")))]
     pub fn private<'a>(&'a self, key: &Key) -> PrivateJar<&'a Self> {
         PrivateJar::new(self, key)
     }
@@ -438,7 +438,7 @@ impl CookieJar {
     /// jar.private_mut(&key).remove(Cookie::named("private"));
     /// ```
     #[cfg(feature = "private")]
-    #[cfg_attr(nightly, doc(cfg(feature = "private")))]
+    #[cfg_attr(all(nightly, doc), doc(cfg(feature = "private")))]
     pub fn private_mut<'a>(&'a mut self, key: &Key) -> PrivateJar<&'a mut Self> {
         PrivateJar::new(self, key)
     }
@@ -473,7 +473,7 @@ impl CookieJar {
     /// assert!(jar.get("signed").is_some());
     /// ```
     #[cfg(feature = "signed")]
-    #[cfg_attr(nightly, doc(cfg(feature = "signed")))]
+    #[cfg_attr(all(nightly, doc), doc(cfg(feature = "signed")))]
     pub fn signed<'a>(&'a self, key: &Key) -> SignedJar<&'a Self> {
         SignedJar::new(self, key)
     }
@@ -500,7 +500,7 @@ impl CookieJar {
     /// jar.signed_mut(&key).remove(Cookie::named("signed"));
     /// ```
     #[cfg(feature = "signed")]
-    #[cfg_attr(nightly, doc(cfg(feature = "signed")))]
+    #[cfg_attr(all(nightly, doc), doc(cfg(feature = "signed")))]
     pub fn signed_mut<'a>(&'a mut self, key: &Key) -> SignedJar<&'a mut Self> {
         SignedJar::new(self, key)
     }

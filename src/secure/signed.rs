@@ -19,7 +19,7 @@ pub(crate) const KEY_LEN: usize = 32;
 /// integrity and authenticity. In other words, clients cannot tamper with the
 /// contents of a cookie nor can they fabricate cookie values, but the data is
 /// visible in plaintext.
-#[cfg_attr(nightly, doc(cfg(feature = "signed")))]
+#[cfg_attr(all(nightly, doc), doc(cfg(feature = "signed")))]
 pub struct SignedJar<J> {
     parent: J,
     key: [u8; KEY_LEN],
@@ -36,7 +36,7 @@ impl<J> SignedJar<J> {
     /// Signs the cookie's value providing integrity and authenticity.
     fn sign_cookie(&self, cookie: &mut Cookie) {
         // Compute HMAC-SHA256 of the cookie's value.
-        let mut mac = Hmac::<Sha256>::new_varkey(&self.key).expect("good key");
+        let mut mac = Hmac::<Sha256>::new_from_slice(&self.key).expect("good key");
         mac.update(cookie.value().as_bytes());
 
         // Cookie's new value is [MAC | original-value].
@@ -58,7 +58,7 @@ impl<J> SignedJar<J> {
         let digest = base64::decode(digest_str).map_err(|_| "bad base64 digest")?;
 
         // Perform the verification.
-        let mut mac = Hmac::<Sha256>::new_varkey(&self.key).expect("good key");
+        let mut mac = Hmac::<Sha256>::new_from_slice(&self.key).expect("good key");
         mac.update(value.as_bytes());
         mac.verify(&digest)
             .map(|_| value.to_string())
